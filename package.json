@@ -1,26 +1,34 @@
 {
-  "name": "bought",
-  "version": "1.0.0",
-  "description": "determines if a supported store has stock of an item.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node index.ts"
-  },
-  "keywords": [
-    "stock",
-    "alerts",
-    "shopping"
-  ],
-  "author": "Gnarus-G",
-  "license": "UNLICENSED",
-  "dependencies": {
-    "log4js": "^6.3.0",
-    "puppeteer": "^8.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "^14.14.37",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.2.3"
-  }
+    "name": "@Gnarus-G/store-bought",
+    "version": "1.0.0",
+    "description": "determines if a supported store has stock of an item.",
+    "main": "index.js",
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/Gnarus-G"
+    },
+    "repository": {
+        "type": "git",
+        "url": "ssh://git@github.com:Gnarus-G/store-bought.git",
+        "directory": "@Gnarus-G/store-bought.git"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "ts-node index.ts"
+    },
+    "keywords": [
+        "stock",
+        "alerts",
+        "shopping"
+    ],
+    "author": "Gnarus-G",
+    "license": "UNLICENSED",
+    "dependencies": {
+        "log4js": "^6.3.0",
+        "puppeteer": "^8.0.0"
+    },
+    "devDependencies": {
+        "@types/node": "^14.14.37",
+        "ts-node": "^9.1.1",
+        "typescript": "^4.2.3"
+    }
 }

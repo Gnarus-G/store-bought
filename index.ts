@@ -12,7 +12,7 @@ function logItemStatus(itemName: string, isInStock: boolean) {
     !isInStock && logger.error(str);
 }
 
-export default async function botStock(storeName: string, itemNumber: string): Promise<BoughtResponse> {
+export default async function (storeName: string, itemNumber: string): Promise<BoughtResponse> {
     const module = await import("./store/" + storeName);
 
     logger.info("Lanching...")
@@ -30,5 +30,3 @@ export default async function botStock(storeName: string, itemNumber: string): P
         cartLink: store.getCartLink(itemNumber)
     }
 }
-
-botStock("Newegg", "N82E16819113567")
