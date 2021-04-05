@@ -1,10 +1,10 @@
 import { Page } from "puppeteer";
 
 export declare class Store {
-    public constructor(page: Page)
-    hasStock(itemNumber: string): PromiseLike<boolean>
-    getCartLink(itemNumber: string): string
-    getProductTitle(itemNumber: string): PromiseLike<string | null> 
+    public constructor(page: Page, itemNumber: string)
+    hasStock(): PromiseLike<boolean>
+    getCartLink(): string
+    getProductTitle(): PromiseLike<string | null>
 }
 
 export interface Item {

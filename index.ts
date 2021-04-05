@@ -17,16 +17,16 @@ export default async function (storeName: string, itemNumber: string): Promise<B
 
     logger.info("Lanching...")
     const page = await launchPage()
-    const store: Store = new module.default(page)
+    const store: Store = new module.default(page, itemNumber)
 
     logger.info("Checking stock...")
-    const inStock = await store.hasStock(itemNumber)
-    logItemStatus((await store.getProductTitle(itemNumber))?.substring(0, 30) ?? itemNumber, inStock)
+    const inStock = await store.hasStock()
+    logItemStatus((await store.getProductTitle())?.substring(0, 30) ?? itemNumber, inStock)
 
     await page.close()
 
     return {
         inStock,
-        cartLink: store.getCartLink(itemNumber)
+        cartLink: store.getCartLink()
     }
 }
