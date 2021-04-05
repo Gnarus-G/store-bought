@@ -29,12 +29,13 @@ jobs:
           npm ci
           npm run build
 
-      - name: Publish
       - uses: actions/setup-node@v1
         with:
           node-version: 14.x
           registry-url: https://npm.pkg.github.com/
           scope: "@Gnarus-G"
-      - run: npm publish dist
+          
+      - name: Publish
+        run: npm publish dist
         env:
           NODE_AUTH_TOKEN: ${{secrets.PKG_AUTH_TOKEN}}
