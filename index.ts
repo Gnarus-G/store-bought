@@ -14,8 +14,10 @@ export default async function s(storeName: string, itemNumber: string, register?
     const page = await launchPage()
     const store: Store = new module.default(page, itemNumber)
 
-    register && register(store)
-
     logger.info("Scraping... " + itemNumber)
+    if (register)
+        register(store)
+    else
+        return store.scrape();
     return null;
 }
