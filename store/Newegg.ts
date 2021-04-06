@@ -1,9 +1,30 @@
+import { Readable, ReadableOptions } from "stream";
 import { Page } from "puppeteer";
-import { Store } from "../interface"
+import { Store, StoreResponseDto } from "../interface"
 
-export default class Newegg implements Store {
+export default class Newegg extends Readable implements Store {
 
-    public constructor(private page: Page, private itemNumber: string) { }
+    public constructor(private page: Page, private itemNumber: string, opts?: ReadableOptions) {
+        super(opts ?? {
+            objectMode: true,
+        })
+    }
+
+    _read() {
+        setTimeout(async () => {
+            this.push(JSON.stringify(await this.scrape()) + "\n\n")
+        }, 5000)
+    }
+
+    async scrape() {
+        const data: StoreResponseDto = {
+            cartLink: this.getCartLink(),
+            inStock: await this.findStock(),
+            itemNumber: this.itemNumber,
+            productTitle: await this.getProductTitle()
+        }
+        return data;
+    }
 
     async getProductTitle() {
         if (this.isProductPage())
@@ -12,7 +33,7 @@ export default class Newegg implements Store {
         return productTitleHeading?.evaluate(node => node.textContent)
     }
 
-    async hasStock() {
+    async findStock() {
         while (!this.page.url().includes(this.itemNumber))
             await this.page.goto(`https://newegg.com/p/${this.itemNumber}`, { waitUntil: "networkidle0" })
         const [outOfStockFlag] = await this.page.$x("//span[contains(.,'OUT OF STOCK')]")
@@ -21,6 +42,13 @@ export default class Newegg implements Store {
 
     getCartLink() {
         return `https://secure.newegg.com/Shopping/AddtoCart.aspx?Submit=ADD&ItemList=${this.itemNumber}`
+    }
+
+    async close() {
+        await this.page.close()
+        if (this.page.browser().pages.length < 1)
+            await this.page.browser().close()
+        this.emit("close")
     }
 
     private isProductPage() {

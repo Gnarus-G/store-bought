@@ -1,32 +1,21 @@
-import { BoughtResponse, Store } from "./interface";
+import { StoreResponseDto, Store } from "./interface";
 import launchPage from "./utils/launchPage";
-import { StockStatus } from "./utils";
 import logging from "./utils/logging";
 
 const logger = logging("trace", "BotBought");
 
-function logItemStatus(itemName: string, isInStock: boolean) {
-    let str = itemName + ": "
-    str += isInStock ? StockStatus.STOCK_FOUND : StockStatus.NO_STOCK
-    isInStock && logger.trace(str)
-    !isInStock && logger.error(str);
-}
+export function s(storeName: string, itemNumber: string): Promise<StoreResponseDto | null>;
+export function s(storeName: string, itemNumber: string, register: (store: Store) => void): Promise<StoreResponseDto | null>;
 
-export default async function (storeName: string, itemNumber: string): Promise<BoughtResponse> {
+export default async function s(storeName: string, itemNumber: string, register?: (store: Store) => void): Promise<StoreResponseDto | null> {
     const module = await import("./store/" + storeName);
 
-    logger.info("Lanching...")
+    logger.info("Lanching... " + storeName)
     const page = await launchPage()
     const store: Store = new module.default(page, itemNumber)
 
-    logger.info("Checking stock...")
-    const inStock = await store.hasStock()
-    logItemStatus((await store.getProductTitle())?.substring(0, 30) ?? itemNumber, inStock)
+    register && register(store)
 
-    await page.close()
-
-    return {
-        inStock,
-        cartLink: store.getCartLink()
-    }
+    logger.info("Scraping... " + itemNumber)
+    return null;
 }

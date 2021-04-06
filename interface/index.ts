@@ -1,10 +1,13 @@
+import { Readable } from "stream";
 import { Page } from "puppeteer";
 
-export declare class Store {
+export declare class Store extends Readable {
     public constructor(page: Page, itemNumber: string)
-    hasStock(): PromiseLike<boolean>
+    scrape(): Promise<StoreResponseDto>
+    findStock(): PromiseLike<boolean>
     getCartLink(): string
     getProductTitle(): PromiseLike<string | null>
+    close(): Promise<void>
 }
 
 export interface Item {
@@ -12,7 +15,9 @@ export interface Item {
     title: string
 }
 
-export interface BoughtResponse {
+export interface StoreResponseDto {
+    productTitle: string
+    itemNumber: string
     inStock: boolean
     cartLink: string
 }
