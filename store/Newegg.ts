@@ -27,15 +27,13 @@ export default class Newegg extends Readable implements Store {
     }
 
     async getProductTitle() {
-        if (this.isProductPage())
-            await this.page.goto(`https://newegg.com/p/${this.itemNumber}`, { waitUntil: "networkidle0" })
+        await this.page.goto(`https://newegg.com/p/${this.itemNumber}`, { waitUntil: "networkidle0" })
         const productTitleHeading = await this.page.$("h1.product-title")
         return productTitleHeading?.evaluate(node => node.textContent)
     }
 
     async findStock() {
-        while (!this.page.url().includes(this.itemNumber))
-            await this.page.goto(`https://newegg.com/p/${this.itemNumber}`, { waitUntil: "networkidle0" })
+        await this.page.goto(`https://newegg.com/p/${this.itemNumber}`, { waitUntil: "networkidle0" })
         const [outOfStockFlag] = await this.page.$x("//span[contains(.,'OUT OF STOCK')]")
         return !outOfStockFlag
     }
@@ -52,10 +50,6 @@ export default class Newegg extends Readable implements Store {
             this.emit("close")
         } catch (err) {
         }
-    }
-
-    private isProductPage() {
-        return this.page.url().includes(this.itemNumber);
     }
 
 }
