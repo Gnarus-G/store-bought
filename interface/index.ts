@@ -6,7 +6,6 @@ export declare class Store extends Readable {
     scrape(): Promise<StoreResponseDto>
     findStock(): PromiseLike<boolean>
     getCartLink(): string
-    getProductTitle(): PromiseLike<string | null>
 }
 
 export interface Item {
