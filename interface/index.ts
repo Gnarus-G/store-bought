@@ -7,7 +7,6 @@ export declare class Store extends Readable {
     findStock(): PromiseLike<boolean>
     getCartLink(): string
     getProductTitle(): PromiseLike<string | null>
-    close(): Promise<void>
 }
 
 export interface Item {

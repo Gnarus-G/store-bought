@@ -5,14 +5,19 @@ import { Store, StoreResponseDto } from "../interface"
 export default class Newegg extends Readable implements Store {
 
     public constructor(private page: Page, private itemNumber: string, opts?: ReadableOptions) {
-        super(opts ?? {
-            objectMode: true,
+        super(opts)
+        this.on("end", async () => {
+            console.log(`Newegg page closing now...`)
+            await this.page.close()
         })
     }
 
     _read() {
         setTimeout(async () => {
-            this.push(JSON.stringify(await this.scrape()) + "\n\n")
+            if (this.page.isClosed()) return
+            const data = await this.scrape();
+            this.push(JSON.stringify(data) + "\n\n")
+            data.inStock && this.emit("end")
         }, 5000)
     }
 
@@ -40,16 +45,6 @@ export default class Newegg extends Readable implements Store {
 
     getCartLink() {
         return `https://secure.newegg.com/Shopping/AddtoCart.aspx?Submit=ADD&ItemList=${this.itemNumber}`
-    }
-
-    async close() {
-        try {
-            await this.page.close()
-            if (this.page.browser().pages.length < 1)
-                await this.page.browser().close()
-            this.emit("close")
-        } catch (err) {
-        }
     }
 
 }
