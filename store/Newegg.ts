@@ -45,10 +45,13 @@ export default class Newegg extends Readable implements Store {
     }
 
     async close() {
-        await this.page.close()
-        if (this.page.browser().pages.length < 1)
-            await this.page.browser().close()
-        this.emit("close")
+        try {
+            await this.page.close()
+            if (this.page.browser().pages.length < 1)
+                await this.page.browser().close()
+            this.emit("close")
+        } catch (err) {
+        }
     }
 
     private isProductPage() {
