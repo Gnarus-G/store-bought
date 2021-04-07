@@ -1,58 +1,50 @@
-import { Readable, ReadableOptions } from "stream";
 import { Page } from "puppeteer";
-import { Store, StoreResponseDto } from "../interface"
+import { Store } from "../interface"
 import logging from "../utils/logging";
 
-export default class Newegg extends Readable implements Store {
+const logger = logging("trace", "Newegg Store");
 
-    public constructor(private page: Page, private itemNumber: string, opts?: ReadableOptions) {
-        super(opts)
-        this.on("end", async () => {
-            if (this.page.isClosed())
-                console.log(`this.page is closed`, this.page.toString())
-            else {
-                console.log(`Newegg page for item#${itemNumber}, closing now...`)
-                await this.page.close()
-            }
-        })
-    }
+export default class Newegg implements Store {
 
-    async _read() {
-        try {
-            if (this.page.isClosed()) return
-            const data = await this.scrape();
-            this.push(JSON.stringify(data) + "\n\n")
-            data.inStock && this.emit("end")
-        } catch (error) {
-            logging("debug", "NeweggStore").warn(error)
-        } finally {
-            this.emit("end")
-        }
-    }
+    private productTitle = "";
+    private done = false;
 
-    async scrape() {
-        const data: StoreResponseDto = {
-            cartLink: this.getCartLink(),
-            inStock: await this.findStock(),
-            itemNumber: this.itemNumber,
-            productTitle: await this.getProductTitle()
-        }
-        return data;
-    }
+    public constructor(private page: Page, public readonly itemNumber: string) { }
 
-    private async getProductTitle() {
+    private async findProductTitle() {
+        logger.debug("Reading Product title...")
         const productTitleHeading = await this.page.$("h1.product-title")
-        return productTitleHeading?.evaluate(node => node.textContent)
+        this.productTitle = await productTitleHeading?.evaluate(node => node.textContent)
     }
 
     async findStock() {
+        logger.debug("Navigating to the product page...")
         await this.page.goto(`https://newegg.com/p/${this.itemNumber}`, { waitUntil: "networkidle2" })
+
+        logger.debug("Looking at stock flag...")
         const [outOfStockFlag] = await this.page.$x("//span[contains(.,'OUT OF STOCK')]")
-        return !outOfStockFlag
+        this.done = !outOfStockFlag
+
+        if (!this.productTitle)
+            await this.findProductTitle()
+    }
+
+    getProductTitle() {
+        return this.productTitle
     }
 
     getCartLink() {
         return `https://secure.newegg.com/Shopping/AddtoCart.aspx?Submit=ADD&ItemList=${this.itemNumber}`
+    }
+
+    hasStock() {
+        return this.done;
+    }
+
+    async close() {
+        logger.debug(`Now attempting to close the page for item#: ${this.itemNumber}`)
+        await this.page.close()
+        logger.info(`Closed the page for item#: ${this.itemNumber}`)
     }
 
 }

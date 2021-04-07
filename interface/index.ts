@@ -1,11 +1,14 @@
-import { Readable } from "stream";
 import { Page } from "puppeteer";
+import { ReadableOptions, Readable } from "stream";
 
-export declare class Store extends Readable {
+export declare class Store {
+    public readonly itemNumber: string;
     public constructor(page: Page, itemNumber: string)
-    scrape(): Promise<StoreResponseDto>
-    findStock(): PromiseLike<boolean>
+    findStock(): Promise<void>
     getCartLink(): string
+    getProductTitle(): string
+    hasStock(): boolean
+    close(): Promise<void>
 }
 
 export interface Item {

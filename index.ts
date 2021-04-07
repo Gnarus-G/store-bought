@@ -1,13 +1,23 @@
 import { Browser } from "puppeteer";
 import { StoreResponseDto, Store } from "./interface";
+import getProductDataFromStore from "./store/getProductDataFromStore";
+import StoreStream from "./store/StoreStream";
 import launchBrowser from "./utils/launchBrowser";
 import logging from "./utils/logging";
 
 const logger = logging("trace", "BotBought");
 
-let browser: Browser | null = null;
+let browser: Browser | undefined;
 
-export default async function s(storeName: string, itemNumber: string, register?: (store: Store) => void): Promise<StoreResponseDto | null> {
+/**
+ * Open a page in a browser to parse information about
+ * an item in the given store.
+ * @param storeName for any supported store
+ * @param itemNumber for the given store
+ * @param register to consume a stream of the product data
+ * @returns product data or null if a stream was consumed
+ */
+export default async function storeBought(storeName: string, itemNumber: string, register?: (stream: StoreStream) => void): Promise<StoreResponseDto | null> {
     const module = await import("./store/" + storeName);
 
     browser = browser ? browser : await launchBrowser();
@@ -18,9 +28,9 @@ export default async function s(storeName: string, itemNumber: string, register?
 
     logger.info("Scraping... " + itemNumber)
     if (register)
-        register(store)
+        register(new StoreStream(store))
     else
-        return store.scrape();
+        return await getProductDataFromStore(store)
     return null;
 }
 

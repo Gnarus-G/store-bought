@@ -15,6 +15,7 @@
 # misc
 .DS_Store
 *.pem
+.vscode
 
 # debug
 npm-debug.log*
@@ -26,3 +27,9 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+
+# local dev setup
+*.debug.yml
+*.local
+Makefile
+runner.ts
