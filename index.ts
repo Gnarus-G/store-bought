@@ -7,7 +7,7 @@ import logging from "./utils/logging";
 
 const logger = logging("trace", "BotBought");
 
-let browser: Browser | undefined;
+let browser: Browser | null;
 
 /**
  * Open a page in a browser to parse information about
@@ -36,4 +36,5 @@ export default async function storeBought(storeName: string, itemNumber: string,
 
 export const closeBrowser = async () => {
     await browser?.close()
+    browser = null;
 }
