@@ -10,7 +10,6 @@ export default class StoreStream extends Readable {
 
     constructor(private store: Store, opts?: ReadableOptions) {
         super(opts)
-        this.on("end", this.close)
     }
 
     async _read() {
@@ -19,7 +18,7 @@ export default class StoreStream extends Readable {
                 const data = await getProductDataFromStore(this.store)
                 this.push(JSON.stringify(data) + "\n\n")
             } else {
-                this.emit("end")
+                this.push(null)
             }
         } catch (error) {
             logger.warn(error)
@@ -27,8 +26,8 @@ export default class StoreStream extends Readable {
     }
 
     async close() {
-        this.pause()
-        this.store.close()
+        this.emit("end")
+        await this.store.close()
         this.destroy()
     }
 

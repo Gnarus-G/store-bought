@@ -22,7 +22,7 @@ export default class Newegg implements Store {
         await this.page.goto(`https://newegg.com/p/${this.itemNumber}`, { waitUntil: "networkidle2" })
 
         logger.debug("Looking at stock flag...")
-        const [outOfStockFlag] = await this.page.$x("//span[contains(.,'OUT OF STOCK')]")
+        const [outOfStockFlag] = await this.page.$x("//strong[contains(.,'OUT OF STOCK')]")
         this.done = !outOfStockFlag
 
         if (!this.productTitle)
