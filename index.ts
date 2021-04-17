@@ -1,13 +1,37 @@
-import { Browser } from "puppeteer";
-import { StoreResponseDto, Store } from "./interface";
+import { Page } from "puppeteer";
+import { Store } from "./interface";
 import getProductDataFromStore from "./store/getProductDataFromStore";
+import Newegg from "./store/Newegg";
 import StoreStream from "./store/StoreStream";
 import launchBrowser from "./utils/launchBrowser";
 import logging from "./utils/logging";
 
 const logger = logging("trace", "BotBought");
 
-let browser: Browser | null;
+const storeMap: Record<
+    "newegg"
+    , (page: Page, itemNumber: string) => Store> = {
+    newegg: (page, itemn) => new Newegg(page, itemn)
+}
+
+const setup = async (launch: typeof launchBrowser) => {
+
+    const browser = await launch();
+
+    return async (storeName: keyof typeof storeMap, itemNumber: string, register?: (stream: StoreStream) => void) => {
+
+        logger.info("Lanching... " + storeName)
+        const page = await browser.newPage()
+        const store = storeMap[storeName](page, itemNumber);
+
+        logger.info("Scraping... " + itemNumber)
+        if (register)
+            register(new StoreStream(store))
+        else
+            return await getProductDataFromStore(store)
+        return null;
+    }
+}
 
 /**
  * Open a page in a browser to parse information about
@@ -17,24 +41,5 @@ let browser: Browser | null;
  * @param register to consume a stream of the product data
  * @returns product data or null if a stream was consumed
  */
-export default async function storeBought(storeName: string, itemNumber: string, register?: (stream: StoreStream) => void): Promise<StoreResponseDto | null> {
-    const module = await import("./store/" + storeName);
-
-    browser = browser ? browser : await launchBrowser();
-
-    logger.info("Lanching... " + storeName)
-    const page = await browser.newPage()
-    const store: Store = new module.default(page, itemNumber)
-
-    logger.info("Scraping... " + itemNumber)
-    if (register)
-        register(new StoreStream(store))
-    else
-        return await getProductDataFromStore(store)
-    return null;
-}
-
-export const closeBrowser = async () => {
-    await browser?.close()
-    browser = null;
-}
+const openStore = setup(launchBrowser);
+export default openStore;
