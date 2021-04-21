@@ -1,6 +1,9 @@
 # store-bought
 Determines if a supported store has stock of a product.
 
+---
+[![CI](https://github.com/Gnarus-G/store-bought/actions/workflows/CI.yml/badge.svg)](https://github.com/Gnarus-G/store-bought/actions/workflows/CI.yml)
+
 ## Install
     npm install @gnarus-g/store-bought
 ## Usage
