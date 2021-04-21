@@ -39,5 +39,5 @@ const setup = async (launch: typeof launchBrowser) => {
  * @param register to consume a stream of the product data
  * @returns product data or null if a stream was consumed
  */
-const openStore = setup(launchBrowser);
-export default openStore;
+const getStoreBought = () => setup(launchBrowser);
+export default getStoreBought;
