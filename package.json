@@ -1,7 +1,7 @@
 {
     "name": "@gnarus-g/store-bought",
     "version": "1.0.9",
-    "description": "determines if a supported store has stock of an item.",
+    "description": "Determines if a supported store has stock of a product.",
     "main": "index.js",
     "publishConfig": {
         "registry": "https://npm.pkg.github.com/Gnarus-G"
@@ -16,13 +16,14 @@
     },
     "keywords": [
         "stock",
+        "bot",
         "scraping",
         "puppeteer",
         "alerts",
         "shopping"
     ],
     "author": "Gnarus-G",
-    "license": "UNLICENSED",
+    "license": "MIT",
     "dependencies": {
         "log4js": "^6.3.0",
         "puppeteer": "^8.0.0"
