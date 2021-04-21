@@ -1,5 +1,5 @@
 import { Page } from "puppeteer";
-import { Store } from "./interface";
+import { Store, StoreName } from "./interface";
 import getProductDataFromStore from "./store/getProductDataFromStore";
 import Newegg from "./store/Newegg";
 import StoreStream from "./store/StoreStream";
@@ -8,9 +8,7 @@ import logging from "./utils/logging";
 
 const logger = logging("trace", "BotBought");
 
-const storeMap: Record<
-    "newegg"
-    , (page: Page, itemNumber: string) => Store> = {
+const storeMap: Record<StoreName, (page: Page, itemNumber: string) => Store> = {
     newegg: (page, itemn) => new Newegg(page, itemn)
 }
 
@@ -18,7 +16,7 @@ const setup = async (launch: typeof launchBrowser) => {
 
     const browser = await launch();
 
-    return async (storeName: keyof typeof storeMap, itemNumber: string, register?: (stream: StoreStream) => void) => {
+    return async (storeName: StoreName, itemNumber: string, register?: (stream: StoreStream) => void) => {
 
         logger.info("Lanching... " + storeName)
         const page = await browser.newPage()

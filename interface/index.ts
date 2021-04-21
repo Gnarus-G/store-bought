@@ -1,5 +1,4 @@
 import { Page } from "puppeteer";
-import { ReadableOptions, Readable } from "stream";
 
 export declare class Store {
     public readonly itemNumber: string;
@@ -22,3 +21,5 @@ export interface StoreResponseDto {
     inStock: boolean
     cartLink: string
 }
+
+export type StoreName = "newegg"
