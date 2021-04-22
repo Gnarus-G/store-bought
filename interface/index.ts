@@ -30,4 +30,6 @@ export interface StoreResponseDto {
     cartLink: string
 }
 
-export type StoreName = "newegg" | "amazon"
+export const ALL_STORES = ["newegg", "amazon"] as const;
+
+export type StoreName = (typeof ALL_STORES)[number]
