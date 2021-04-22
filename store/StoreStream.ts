@@ -1,10 +1,8 @@
 import { Readable, ReadableOptions } from "stream";
 import { Store } from "../interface";
-import getProductDataFromStore from "./getProductDataFromStore";
 import logging from "../utils/logging";
 
 const logger = logging("trace", "Newegg StoreStream");
-
 
 export default class StoreStream extends Readable {
 
@@ -14,11 +12,16 @@ export default class StoreStream extends Readable {
 
     async _read() {
         try {
-            if (!this.store.hasStock()) {
-                const data = await getProductDataFromStore(this.store)
-                this.push(JSON.stringify(data) + "\n\n")
-            } else {
-                this.push(null)
+            switch (this.store.toDto().status) {
+                case "undetermined":
+                case "nostock":
+                    await this.store.findStock()
+                    this.push(JSON.stringify(this.store.toDto()) + "\n\n")
+                    break;
+                case "instock":
+                    this.emit("stockfound", this.store.toDto());
+                    this.push(null);
+                    break;
             }
         } catch (error) {
             logger.warn(error)
