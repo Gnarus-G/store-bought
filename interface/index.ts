@@ -30,4 +30,4 @@ export interface StoreResponseDto {
     cartLink: string
 }
 
-export type StoreName = "newegg" | "bestbuy"
+export type StoreName = "newegg" | "amazon"
