@@ -1,14 +1,10 @@
-import { StoreConstructor, StoreName } from "./interface";
+import { StoreName } from "./interface";
+import storesMap from "./store/constructors/storesMap";
 import StoreStream from "./store/StoreStream";
 import launchBrowser from "./utils/launchBrowser";
 import logging from "./utils/logging";
 
 const logger = logging("trace", "StoreBought");
-
-// const storeMap: Record<StoreName, (page: Page, itemNumber: string) => Store> = {
-//     newegg,
-//     bestbuy
-// }
 
 const setup = async (launch: typeof launchBrowser) => {
 
@@ -18,9 +14,7 @@ const setup = async (launch: typeof launchBrowser) => {
 
         logger.info("Lanching... " + storeName)
         const page = await browser.newPage()
-        // const store = storeMap[storeName](page, itemNumber);
-        const getStore: StoreConstructor = require(`./store/constructors/${storeName}`).default
-        const store = getStore(page, itemNumber);
+        const store = storesMap[storeName](page, itemNumber);
 
         logger.info("Scraping... " + itemNumber)
         if (register)
