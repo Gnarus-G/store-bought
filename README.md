@@ -10,7 +10,7 @@ Determines if a supported store has stock of a product.
 ```ts
 const storeBought = await getStoreBought();
 await storeBought(storeName, itemNumber, stream => {
-    //outputStream can any `Writable` stream of your preference or design.
+    //outputStream can be any `Writable` stream of your preference or design.
     stream.pipe(outputStream)
 });
 ```
