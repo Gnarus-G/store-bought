@@ -1,6 +1,6 @@
 {
     "name": "@gnarus-g/store-bought",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Determines if a supported store has stock of a product.",
     "main": "index.js",
     "publishConfig": {
