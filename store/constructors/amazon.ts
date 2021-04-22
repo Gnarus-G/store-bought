@@ -6,7 +6,7 @@ export const amazon: StoreConstructor = (page, itemNumber) =>
         itemNumber,
         name: "amazon",
         xpaths: {
-            inStock: "//span[contains(.,'In Stock')]",
+            inStock: "//span[contains(.,'In Stock') or contains(.,'in stock')]",
             outOfStock: "//span[contains(.,'Currently unavailable')]",
             title: "//span[@id='productTitle']"
         },
