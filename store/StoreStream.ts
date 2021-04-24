@@ -4,6 +4,12 @@ import logging from "../utils/logging";
 
 const logger = logging("trace", "Newegg StoreStream");
 
+enum STORESTREAM_EVENTS {
+    DATA = "data",
+    STOCKFOUND = "stockfound",
+    END = "end"
+}
+
 export default class StoreStream extends Readable {
 
     constructor(private store: Store, opts?: ReadableOptions) {
@@ -19,7 +25,7 @@ export default class StoreStream extends Readable {
                     this.push(JSON.stringify(this.store.toDto()) + "\n\n")
                     break;
                 case "instock":
-                    this.emit("stockfound", this.store.toDto());
+                    this.emit(STORESTREAM_EVENTS.STOCKFOUND, this.store.toDto());
                     this.push(null);
                     break;
             }
@@ -29,7 +35,7 @@ export default class StoreStream extends Readable {
     }
 
     async close() {
-        this.emit("end")
+        this.emit(STORESTREAM_EVENTS.END)
         await this.store.close()
         this.destroy()
     }

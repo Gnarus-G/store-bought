@@ -1,12 +1,12 @@
 import { Logger } from "log4js";
 import { Page } from "puppeteer"
-import { Status, Store, StoreParams } from "../interface"
+import { StockStatus, Store, StoreParams } from "../interface"
 import logging from "../utils/logging";
 
 export default class StoreImpl implements Store {
 
     private logger: Logger;
-    private status: Status = "undetermined";
+    private status: StockStatus = "undetermined";
     private productTitle = "";
 
     constructor(public readonly params: StoreParams, private page: Page) {

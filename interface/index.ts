@@ -7,7 +7,7 @@ export interface StoreParams {
     links: Record<"product" | "cart", string>
 }
 
-export type Status = "undetermined" | "instock" | "nostock"
+export type StockStatus = "undetermined" | "instock" | "nostock"
 
 export interface Store {
     readonly params: StoreParams;
@@ -26,7 +26,7 @@ export interface Item {
 export interface StoreResponseDto {
     productTitle: string
     itemNumber: string
-    status: Status
+    status: StockStatus
     cartLink: string
 }
 
