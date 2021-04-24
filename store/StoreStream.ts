@@ -4,7 +4,7 @@ import logging from "../utils/logging";
 
 const logger = logging("trace", "Newegg StoreStream");
 
-enum STORESTREAM_EVENTS {
+export enum STORESTREAM_EVENTS {
     DATA = "data",
     STOCKFOUND = "stockfound",
     END = "end"
